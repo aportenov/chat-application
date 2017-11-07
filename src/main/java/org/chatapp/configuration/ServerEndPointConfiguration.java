@@ -1,28 +1,30 @@
 package org.chatapp.configuration;
 
-import org.chatapp.controllers.EchoServer;
+import org.chatapp.controllers.EndpointServer;
+import org.springframework.context.annotation.Configuration;
 
 import javax.websocket.Endpoint;
 import javax.websocket.server.ServerApplicationConfig;
-
 import javax.websocket.server.ServerEndpointConfig;
 import java.util.HashSet;
 import java.util.Set;
 
-
-public class ServerEndPointConfiguration implements ServerApplicationConfig{
-
-
+@Configuration
+public class ServerEndpointConfiguration implements ServerApplicationConfig{
     @Override
     public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
-        Set<ServerEndpointConfig> serverEndPointConfigurations = new HashSet<>();
-        if (set.contains(EchoServer.class)){
-            serverEndPointConfigurations.add(new ServerEndpointConfig.Builder(
-                    EchoServer.class,
-                    "/websocket/room").build());
+        Set<ServerEndpointConfig> serverEndpointConfigSet = new HashSet<>();
+        if (set.contains(EndpointServer.class)){
+            serverEndpointConfigSet.add(
+                    ServerEndpointConfig.Builder.create(
+                    EndpointServer.class,
+                    "/websocket/room"
+                    )
+                    .build()
+            );
         }
 
-        return serverEndPointConfigurations;
+        return serverEndpointConfigSet;
     }
 
     @Override

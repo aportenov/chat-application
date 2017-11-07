@@ -4,7 +4,7 @@ import javax.websocket.*;
 import java.io.IOException;
 
 
-public class EchoServer extends Endpoint {
+public class EndpointServer extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {

@@ -1,7 +1,6 @@
 package org.chatapp.controllers;
 
 import org.chatapp.entities.Room;
-import org.chatapp.entities.User;
 import org.chatapp.models.RoomModel;
 import org.chatapp.services.RoomService;
 import org.chatapp.services.UserService;

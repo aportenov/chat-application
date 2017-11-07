@@ -1,6 +1,7 @@
 package org.chatapp.serviceImpl;
 
 import org.chatapp.entities.Room;
+import org.chatapp.repositories.RoomRepository;
 import org.chatapp.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -10,15 +11,14 @@ import javax.persistence.EntityManager;
 
 @Service
 @Transactional
-@Repository
 public class RoomServiceImpl implements RoomService{
 
     @Autowired
-    private EntityManager entityManager;
+    private RoomRepository roomRepository;
 
 
     @Override
     public void save(Room room) {
-        this.entityManager.persist(room);
+        this.roomRepository.save(room);
     }
 }
