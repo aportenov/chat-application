@@ -1,5 +1,7 @@
 package org.chatapp.entities;
 
+import org.chatapp.enumerable.MessageType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
@@ -48,5 +50,13 @@ public class Room implements Serializable{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void addUsers(User user) {
+        this.getUsers().add(user);
     }
 }

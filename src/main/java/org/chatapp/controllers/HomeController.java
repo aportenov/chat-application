@@ -27,7 +27,7 @@ public class HomeController {
 //       user.setUsername("user1");
 //       user.setPassword("1");
 //       this.userService.save(user);
-        return "index";
+        return "chat";
     }
 
     @PostMapping("/test")

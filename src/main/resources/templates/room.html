@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <link rel="stylesheet" href="/../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
     <link rel="stylesheet" href="/../../static/css/room.css" th:href="@{/css/room.css}" />
@@ -11,18 +9,19 @@
 <body>
 <div class="container">
     <div class="col-lg-8">
-        <input  id="echo" class="form-group col-lg-12" type="text"/>
+        <input  id="message"  class="form-group col-lg-12" type="text"/>
     </div>
     <div class="col-lg-2">
-        <button class="btn btn-success" type="submit">Submit</button>
+        <button class="btn btn-success" onclick="sendMessage();" type="submit">Submit</button>
     </div>
 
-    <div id="echoBack">
+    <div id="output">
     </div>
 </div>
-
 <script src="/../../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" type="text/javascript"></script>
-<script src="/../../static/js/echo.js" th:src="@{/js/echo.js}" type="text/javascript"></script>
-<script src="/../../static/js/jquery-1.10.2.js" th:src="@{js/jquery-1.10.2.js}" type="text/javascript"></script>
+<script src="/../../static/js/main.js" th:src="@{/js/main.js}" type="text/javascript"></script>
+<script src="/../../static/js/sockjs.min.js" th:src="@{/js/sockjs.min.js}" type="text/javascript"></script>
+<script src="/../../static/js/stomp.min.js" th:src="@{/js/stomp.min.js}" type="text/javascript"></script>
+
 </body>
 </html>

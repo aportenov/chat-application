@@ -1,4 +1,6 @@
 package org.chatapp.entities;
+import org.chatapp.enumerable.MessageType;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -24,6 +26,10 @@ public class Message implements Serializable {
 
     @Basic
     private Date date;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "message_type")
+    private MessageType messageType;
 
     public Long getId() {
         return id;
@@ -63,5 +69,13 @@ public class Message implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
     }
 }
