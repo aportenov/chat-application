@@ -1,8 +1,8 @@
 package org.chatapp.services;
 
-import org.chatapp.entities.User;
+import org.chatapp.models.UserBindingModel;
 
 public interface UserService {
 
-    void save(User user);
+    void save(UserBindingModel user);
 }

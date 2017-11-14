@@ -2,6 +2,7 @@ package org.chatapp.controllers;
 
 import org.chatapp.entities.Room;
 import org.chatapp.models.RoomModel;
+import org.chatapp.models.UserBindingModel;
 import org.chatapp.services.RoomService;
 import org.chatapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +21,19 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/test")
+    @GetMapping("/")
     public String getPage(){
 //       User user = new User();
 //       user.setFullName("Testov User");
 //       user.setUsername("user1");
 //       user.setPassword("1");
 //       this.userService.save(user);
-        return "chat";
+        return "index";
     }
 
-    @PostMapping("/test")
-    public String createRoom(@ModelAttribute RoomModel roomModel, ModelMap modelMap){
-        Room room = new Room();
-        room.setName(roomModel.getName());
-        this.roomService.save(room);
-        return "room";
+    @PostMapping("/register")
+    public String createRoom(@ModelAttribute UserBindingModel userBindingModel){
+       this.userService.save(userBindingModel);
+        return "chat";
     }
 }
