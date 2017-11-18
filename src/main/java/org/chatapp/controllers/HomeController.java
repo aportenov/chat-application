@@ -1,16 +1,18 @@
 package org.chatapp.controllers;
 
-import org.chatapp.entities.Room;
-import org.chatapp.models.RoomModel;
 import org.chatapp.models.UserBindingModel;
 import org.chatapp.services.RoomService;
 import org.chatapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 public class HomeController {
@@ -23,17 +25,26 @@ public class HomeController {
 
     @GetMapping("/")
     public String getPage(){
-//       User user = new User();
-//       user.setFullName("Testov User");
-//       user.setUsername("user1");
-//       user.setPassword("1");
-//       this.userService.save(user);
-        return "index";
+        return "redirect:/chat";
     }
 
     @PostMapping("/register")
-    public String createRoom(@ModelAttribute UserBindingModel userBindingModel){
+    public String register(@ModelAttribute UserBindingModel userBindingModel){
        this.userService.save(userBindingModel);
+        return "redirect:/";
+    }
+
+    @GetMapping("/login")
+    public String getLoginPage(@RequestParam(required = false) String error, RedirectAttributes redirectAttributes) {
+        if (error != null) {
+            redirectAttributes.addFlashAttribute("error", "");
+        }
+
+        return "login";
+    }
+
+    @GetMapping("/chat")
+    public String getChatPage() {
         return "chat";
     }
 }
