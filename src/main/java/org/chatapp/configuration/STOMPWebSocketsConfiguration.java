@@ -19,6 +19,6 @@ public class STOMPWebSocketsConfiguration extends AbstractWebSocketMessageBroker
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/");
-        registry.enableSimpleBroker("/room");
+        registry.enableSimpleBroker("/queue/", "/topic/");
     }
 }

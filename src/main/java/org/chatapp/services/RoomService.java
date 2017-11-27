@@ -4,5 +4,7 @@ import org.chatapp.entities.Room;
 
 public interface RoomService {
 
-    void save(Room room);
+    void save(String roomName);
+
+    Room findRoomByName(String roomName);
 }

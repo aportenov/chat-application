@@ -1,8 +1,9 @@
-package org.chatapp.configuration;
+package org.chatapp.controllers;
 
 import org.chatapp.entities.Message;
 import org.chatapp.entities.User;
 import org.chatapp.enumerable.MessageType;
+import org.chatapp.models.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
@@ -38,12 +38,11 @@ public class WebSocketEventListener {
         if (username != null) {
             logger.info("User Disconnected : " + username);
 
-            Message message = new Message();
-            message.setUser(new User());
-            message.setDate(Date.from(Instant.now()));
-            message.setMessageType(MessageType.LEAVE);
+            MessageModel message = new MessageModel();
+            message.setUser(username);
+            message.setMessageType(String.valueOf(MessageType.LEAVE));
 
-            messageSendingOperations.convertAndSend("/room/" + message.getRoom().getName(), message);
+            messageSendingOperations.convertAndSend("/chatApplication", message);
         }
     }
 }

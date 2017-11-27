@@ -1,81 +1,155 @@
-'use strict';
+(function ($) {
 
-var usernamePage = document.querySelector('#username-page');
-var chatPage = document.querySelector('#chat-page');
-var usernameForm = document.querySelector('#usernameForm');
-var messageForm = document.querySelector('#messageForm');
-var messageInput = document.querySelector('#message');
-var messageArea = document.querySelector('#messageArea');
-var connectingElement = document.querySelector('.connecting');
+    var messageForm = document.querySelector('#messageForm');
+    var messageInput = document.querySelector('#message');
+    var messageArea = document.querySelector('#messageArea');
 
-var stompClient = null;
-var roomName = null;
-var username = "Anton";
+    var colors = [
+        '#2196F3', '#32c787', '#00BCD4', '#ff5652',
+        '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
+    ];
 
-var colors = [
-    '#2196F3', '#32c787', '#00BCD4', '#ff5652',
-    '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
-];
+    var channels = {},
+        stompClient = null,
+        roomName = null,
+        username = null,
+        channelsList = [],
+        currentChannel = null,
+        phrasesList = [],
+        channels = $('.channels');
 
-function connect(event) {
-    roomName = document.querySelector('#name').value.trim();
-    if (roomName) {
 
-        $("#roomName").html(roomName);
-        usernamePage.classList.add('hidden');
-        chatPage.classList.remove('hidden');
-
-        var socket = new SockJS('/ws');
-        stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, onConnected, onError);
-        }
-        event.preventDefault();
-
-}
+    var socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, onConnected, onError);
 
 
     function onConnected() {
-        // Subscribe to the Public Channel
-        stompClient.subscribe('/room/' + roomName, onMessageReceived);
+        loadRooms();
+    }
 
-        // Tell your username to the server
-        stompClient.send("/chat.addUser/" + roomName,
-            {},
-            JSON.stringify({user: username, messageType: 'JOIN', roomName: roomName})
-        )
+    function loadRooms() {
+        $.ajax({
+            type: 'GET',
+            url: '/user/rooms',
+            data: 'json',
+            success: function (rooms) {
+                for (var i = 0; i < rooms.length; i++) {
+                    var currentRoom = rooms[i];
+                    subscribeChannel(currentRoom);
+                    createChannel(currentRoom);
+                    joinChannel(currentRoom);
+                    joinRoom(currentRoom);
+                }
+            }
+        });
+    }
 
-        connectingElement.classList.add('hidden');
+    function subscribeChannel(currentRoom) {
+        stompClient.subscribe('/topic/room/' + currentRoom, onMessageReceived);
+    }
+
+    function createChannel() {
+        var ul = document.createElement('ul');
+        ul.setAttribute("id", "messageArea");
+        phrasesList.push(ul);
+    }
+
+    function joinRoom(currentRoom) {
+        var room = {
+            user: username,
+            messageType: 'JOIN',
+            roomName: currentRoom
+        };
+
+        stompClient.send("/addUser/" + currentRoom, {}, JSON.stringify(room));
     }
 
 
-    function onError(error) {
-        connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
-        connectingElement.style.color = 'red';
+    function showChannel(channelName) {
+        var index = channelsList.indexOf(channelName);
+        channels.find('.current ').removeClass('current');
+        channels.find('.channel:eq(' + index + ')').addClass('current');
+        // var currentWindowUlLenght = phrasesList[index].innerHTML.length;
+        // if (currentWindowUlLenght > 0) {
+            $("#messageArea").innerHTML = "";
+            var a = 0;
+        // }
     }
 
+    function joinChannel(channelName) {
+        if (!channels[channelName]) {
+            channelsList.push(channelName);
+            var channel = $('<div class="channel current">' + channelName + '</div>')
+                .on('click', function () {
+                    showChannel(channelName);
+                });
+            channels.append(channel);
+            showChannel(channelName);
+        }
+        showChannel(channelName);
+    }
+
+// function leaveChannel(channelName) {
+//     if (channels[channelName]) {
+//         delete channels[channelName];
+//         var index = channelsList.indexOf(channelName);
+//         channelsList.splice(index, 1);
+//         if (channelName === currentChannel) {
+//             var nextChannel = channelsList[index];
+//             if (!nextChannel) {
+//                 index = index - 1;
+//                 nextChannel = channelsList[index];
+//             }
+//             if (nextChannel) {
+//                 channels.find('.channel:eq(' + index + ')').addClass('current');
+//                 showChannel(nextChannel);
+//             } else {
+//                 clearPhrases();
+//             }
+//         }
+//     } else {
+//         alert('Channel "' + channelName + '" doesn\'t exists!');
+//     }
+// }
 
     function sendMessage(event) {
         var messageContent = messageInput.value.trim();
-
+        currentChannel = $('.current').text();
         if (messageContent && stompClient) {
             var chatMessage = {
                 user: username,
                 message: messageInput.value,
                 messageType: 'CHAT',
-                roomName: roomName
+                roomName: currentChannel
             };
 
-            stompClient.send("/chat.sendMessage/" + roomName, {}, JSON.stringify(chatMessage));
+            stompClient.send("/sendMessage/" + currentChannel, {}, JSON.stringify(chatMessage));
             messageInput.value = '';
         }
         event.preventDefault();
     }
 
+    function loadData(user, messageElement) {
+        messageElement.classList.add('chat-message');
 
+        var avatarElement = document.createElement('i');
+        var avatarText = document.createTextNode(user[0]);
+        avatarElement.appendChild(avatarText);
+        avatarElement.style['background-color'] = getAvatarColor(user);
+
+        messageElement.appendChild(avatarElement);
+
+        var usernameElement = document.createElement('span');
+        var usernameText = document.createTextNode(user);
+        usernameElement.appendChild(usernameText);
+        messageElement.appendChild(usernameElement);
+
+    }
+
+//
     function onMessageReceived(payload) {
         var message = JSON.parse(payload.body);
-
         var messageElement = document.createElement('li');
 
         if (message.messageType === 'JOIN') {
@@ -85,29 +159,25 @@ function connect(event) {
             messageElement.classList.add('event-message');
             message.message = message.user + ' left!';
         } else {
-            messageElement.classList.add('chat-message');
-
-            var avatarElement = document.createElement('i');
-            var avatarText = document.createTextNode(message.user[0]);
-            avatarElement.appendChild(avatarText);
-            avatarElement.style['background-color'] = getAvatarColor(message.user);
-
-            messageElement.appendChild(avatarElement);
-
-            var usernameElement = document.createElement('span');
-            var usernameText = document.createTextNode(message.user);
-            usernameElement.appendChild(usernameText);
-            messageElement.appendChild(usernameElement);
+            loadData(message.user, messageElement);
         }
 
         var textElement = document.createElement('p');
         var messageText = document.createTextNode(message.message);
         textElement.appendChild(messageText);
-
         messageElement.appendChild(textElement);
 
-        messageArea.appendChild(messageElement);
-        messageArea.scrollTop = messageArea.scrollHeight;
+        var currentChannelUl = phrasesList[channelsList.indexOf(message.roomName)];
+        currentChannelUl.appendChild(messageElement);
+        currentChannelUl.scrollTop = currentChannelUl.scrollHeight;
+
+        var currentChannel = $(".current").text();
+        if (currentChannel === message.roomName) {
+
+            messageArea.appendChild(messageElement);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
     }
 
 
@@ -121,8 +191,11 @@ function connect(event) {
         return colors[index];
     }
 
+    function onError(error) {
+        console.log('Could not connect to WebSocket server. Please refresh this page to try again!');
+    }
 
-    usernameForm.addEventListener('submit', connect, true);
     messageForm.addEventListener('submit', sendMessage, true);
-
+})
+(jQuery)
 

@@ -4,10 +4,8 @@ import org.chatapp.entities.Room;
 import org.chatapp.repositories.RoomRepository;
 import org.chatapp.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityManager;
 
 @Service
 @Transactional
@@ -18,7 +16,16 @@ public class RoomServiceImpl implements RoomService{
 
 
     @Override
-    public void save(Room room) {
-        this.roomRepository.save(room);
+    public void save(String roomName) {
+        Room room = this.roomRepository.findOneByName(roomName);
+        if (room == null) {
+            this.roomRepository.save(room);
+        }
+    }
+
+    @Override
+    public Room findRoomByName(String roomName) {
+        Room room = this.roomRepository.findOneByName(roomName);
+        return room;
     }
 }
