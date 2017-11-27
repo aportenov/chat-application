@@ -70,11 +70,10 @@
         var index = channelsList.indexOf(channelName);
         channels.find('.current ').removeClass('current');
         channels.find('.channel:eq(' + index + ')').addClass('current');
-        // var currentWindowUlLenght = phrasesList[index].innerHTML.length;
-        // if (currentWindowUlLenght > 0) {
-            $("#messageArea").innerHTML = "";
-            var a = 0;
-        // }
+        var currentPhrases =  $(".phrases-container");
+        currentPhrases.empty();
+        var fasdf = phrasesList[index];
+        currentPhrases.append(phrasesList[index]);
     }
 
     function joinChannel(channelName) {
@@ -170,13 +169,6 @@
         var currentChannelUl = phrasesList[channelsList.indexOf(message.roomName)];
         currentChannelUl.appendChild(messageElement);
         currentChannelUl.scrollTop = currentChannelUl.scrollHeight;
-
-        var currentChannel = $(".current").text();
-        if (currentChannel === message.roomName) {
-
-            messageArea.appendChild(messageElement);
-            messageArea.scrollTop = messageArea.scrollHeight;
-        }
 
     }
 
