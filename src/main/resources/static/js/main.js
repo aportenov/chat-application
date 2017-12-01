@@ -3,6 +3,8 @@
     var messageForm = document.querySelector('#messageForm');
     var messageInput = document.querySelector('#message');
     var messageArea = document.querySelector('#messageArea');
+    var channelsArea = document.querySelector("#joinchannel");
+    var leaveChannelArea = document.querySelector("#leaveChannel");
 
     var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -16,6 +18,8 @@
         channelsList = [],
         currentChannel = null,
         phrasesList = [],
+        userList = [],
+        subscriptionList = [],
         channels = $('.channels');
 
 
@@ -28,6 +32,7 @@
         loadRooms();
     }
 
+
     function loadRooms() {
         $.ajax({
             type: 'GET',
@@ -39,14 +44,20 @@
                     subscribeChannel(currentRoom);
                     createChannel(currentRoom);
                     joinChannel(currentRoom);
-                    joinRoom(currentRoom);
                 }
             }
         });
     }
 
     function subscribeChannel(currentRoom) {
-        stompClient.subscribe('/topic/room/' + currentRoom, onMessageReceived);
+        var currentSubscription = stompClient.subscribe('/topic/room/' + currentRoom, onMessageReceived);
+        subscriptionList.push(currentSubscription);
+    }
+
+    function unSubscribeChannel(roomIndex) {
+        var currentSubscription = subscriptionList[roomIndex];
+        currentSubscription.unsubscribe();
+        subscriptionList.splice(roomIndex, 1);
     }
 
     function createChannel() {
@@ -62,7 +73,17 @@
             roomName: currentRoom
         };
 
-        stompClient.send("/addUser/" + currentRoom, {}, JSON.stringify(room));
+        stompClient.send("/addRoom/" + currentRoom, {}, JSON.stringify(room));
+    }
+
+    function leaveRoom(currentRoom) {
+        var room = {
+            user: username,
+            messageType: 'LEAVE',
+            roomName: currentRoom
+        };
+
+        stompClient.send("/leaveRoom/" + currentRoom, {}, JSON.stringify(room));
     }
 
 
@@ -70,10 +91,34 @@
         var index = channelsList.indexOf(channelName);
         channels.find('.current ').removeClass('current');
         channels.find('.channel:eq(' + index + ')').addClass('current');
-        var currentPhrases =  $(".phrases-container");
+        var currentPhrases = $(".phrases-container");
         currentPhrases.empty();
-        var fasdf = phrasesList[index];
         currentPhrases.append(phrasesList[index]);
+        var currentUserList = $(".users");
+        currentUserList.empty();
+        currentUserList.append(userList[index]); //userList is empty; no users appended to div
+    }
+
+    function loadUsers(channelName) {
+        var ul = document.createElement('ul');
+        $.ajax({
+            type: 'GET',
+            url: '/user/room/' + channelName,
+            data: 'json',
+            success: function (users) {
+                for (var i = 0; i < users.length; i++) {
+                    var messageElement = document.createElement('li');
+                    var currentUser = users[i];
+                    appendUserAvatar(currentUser.username, messageElement);
+                    var image = currentUser.image;
+                    ul.appendChild(messageElement);
+                    ul.scrollTop = ul.scrollHeight;
+                }
+                var channelName = $('.current').text();
+                var index = channelsList.indexOf(channelName);
+                userList.splice(index, 0, ul);
+            }
+        });
     }
 
     function joinChannel(channelName) {
@@ -85,32 +130,32 @@
                 });
             channels.append(channel);
             showChannel(channelName);
+
         }
+        joinRoom(channelName);
+        loadUsers(channelName);
         showChannel(channelName);
     }
 
-// function leaveChannel(channelName) {
-//     if (channels[channelName]) {
-//         delete channels[channelName];
-//         var index = channelsList.indexOf(channelName);
-//         channelsList.splice(index, 1);
-//         if (channelName === currentChannel) {
-//             var nextChannel = channelsList[index];
-//             if (!nextChannel) {
-//                 index = index - 1;
-//                 nextChannel = channelsList[index];
-//             }
-//             if (nextChannel) {
-//                 channels.find('.channel:eq(' + index + ')').addClass('current');
-//                 showChannel(nextChannel);
-//             } else {
-//                 clearPhrases();
-//             }
-//         }
-//     } else {
-//         alert('Channel "' + channelName + '" doesn\'t exists!');
-//     }
-// }
+    function leaveChannel() {
+        var currentRoom = $('.current').text();
+        var index = channelsList.indexOf(currentRoom);
+        currentChannel = channels.find('.current ');
+        if (currentChannel && (channelsList[index] === currentRoom)) {
+            delete channels.find('.current ');
+            $('.current ').remove();
+            channelsList.splice(index, 1);
+            phrasesList.splice(index, 1);
+            userList.splice(index, 1);
+            leaveRoom(currentRoom)
+            loadUsers(currentRoom);
+            unSubscribeChannel(index);
+        }
+
+        if (channelsList.length > 0) {
+            showChannel(channelsList[0]);
+        }
+    }
 
     function sendMessage(event) {
         var messageContent = messageInput.value.trim();
@@ -129,9 +174,7 @@
         event.preventDefault();
     }
 
-    function loadData(user, messageElement) {
-        messageElement.classList.add('chat-message');
-
+    function appendUserAvatar(user, messageElement) {
         var avatarElement = document.createElement('i');
         var avatarText = document.createTextNode(user[0]);
         avatarElement.appendChild(avatarText);
@@ -146,19 +189,18 @@
 
     }
 
-//
+
     function onMessageReceived(payload) {
         var message = JSON.parse(payload.body);
         var messageElement = document.createElement('li');
 
         if (message.messageType === 'JOIN') {
             messageElement.classList.add('event-message');
-            message.message = message.user + ' joined!';
         } else if (message.messageType === 'LEAVE') {
             messageElement.classList.add('event-message');
-            message.message = message.user + ' left!';
         } else {
-            loadData(message.user, messageElement);
+            messageElement.classList.add('chat-message');
+            appendUserAvatar(message.user, messageElement);
         }
 
         var textElement = document.createElement('p');
@@ -187,7 +229,41 @@
         console.log('Could not connect to WebSocket server. Please refresh this page to try again!');
     }
 
+    function loadChannels() {
+        $.ajax({
+            type: 'GET',
+            url: '/rooms/all',
+            data: 'json',
+            success: function (rooms) {
+                $(".modal-body").empty();
+                for (var i = 0; i < rooms.length; i++) {
+                    var currentRoom = rooms[i];
+                    $(".modal-body").append(
+                        $("<div></div>").append(
+                            $("<input></input>")
+                                .addClass("btn btn-info")
+                                .text(currentRoom)
+                                .val(currentRoom))
+                            .on('click', function (room) {
+                                var target = $(room.target);
+                                target.unbind("click");
+                                target.removeClass("btn btn-info").addClass("btn btn-default");
+                                var roomName = target.text();
+                                subscribeChannel(roomName);
+                                createChannel(roomName);
+                                joinChannel(roomName);
+                            }));
+                }
+            }
+        });
+    }
+
+    leaveChannelArea.addEventListener("click", leaveChannel, true);
+    channelsArea.addEventListener("click", loadChannels, true);
     messageForm.addEventListener('submit', sendMessage, true);
+
 })
 (jQuery)
+
+
 

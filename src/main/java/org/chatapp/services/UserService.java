@@ -11,4 +11,12 @@ public interface UserService extends UserDetailsService  {
     String[] findRoomsByUser(String username);
 
     User findUserByName(String username);
+
+    void addRoom(String username, String room);
+
+    void leaveRoom(String username, String room);
+
+    void makeUserOnline(String username);
+
+    User makeUserOffline(String username);
 }

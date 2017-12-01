@@ -1,5 +1,6 @@
 package org.chatapp.entities;
 
+import org.chatapp.enumerable.Status;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,19 @@ public class User implements UserDetails,  Serializable {
 
     @Column(columnDefinition = "TEXT", nullable = true)
     private String image;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+
+    private Status status;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_rooms",
@@ -159,5 +173,9 @@ public class User implements UserDetails,  Serializable {
 
     public void addRole(Role role){
         this.getRoles().add(role);
+    }
+
+    public void removeRoom(Room room){
+        this.getRooms().remove(room);
     }
 }

@@ -87,6 +87,10 @@ html {
 
 }
 
+ul {
+    list-style-type: none;
+}
+
 .app .input button {
     width: 16%;
     margin-left: 2%;
@@ -99,15 +103,18 @@ html {
 .app .channels,
 .app .phrases-container,
 input,
-.channel {
+.channel,
+#joinchannel,
+#leaveChannel{
     border: 1px solid #ccc;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
-    border-radius: 10px;
+     border-radius: 10px;
 }
 
 .channels input{
     margin-bottom: 5px;
+    width: 98%;
 }
 
 .app .chat-message {
@@ -115,8 +122,8 @@ input,
     list-style-type: none;
 }
 
-.app .chat-message i {
-    position: absolute;
+.app .chat-message i,
+.users i{
     width: 42px;
     height: 42px;
     overflow: hidden;
@@ -132,6 +139,19 @@ input,
     text-transform: uppercase;
 }
 
+.app .chat-message i {
+    position: absolute;
+}
+
+.users i {
+    margin-left: -35%;
+    margin-bottom: 1%;
+}
+
+.users span {
+    margin-left: 5%;
+}
+
 #messageArea .event-message {
     width: 100%;
     text-align: center;
@@ -143,4 +163,9 @@ input,
     color: #178cbe;
     font-size: 14px;
     word-wrap: break-word;
+}
+
+.modal-body .btn {
+    width: 100%;
+    margin: 2%;
 }

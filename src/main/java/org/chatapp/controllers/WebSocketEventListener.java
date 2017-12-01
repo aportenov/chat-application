@@ -1,9 +1,11 @@
 package org.chatapp.controllers;
 
 import org.chatapp.entities.Message;
+import org.chatapp.entities.Room;
 import org.chatapp.entities.User;
 import org.chatapp.enumerable.MessageType;
 import org.chatapp.models.MessageModel;
+import org.chatapp.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,15 @@ public class WebSocketEventListener {
     @Autowired
     private SimpMessageSendingOperations messageSendingOperations;
 
+    @Autowired
+    private UserService userService;
+
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String username = (String) headerAccessor.getSessionAttributes().get("username");
+        this.userService.makeUserOnline(username);
     }
 
     @EventListener
@@ -36,13 +44,16 @@ public class WebSocketEventListener {
 
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         if (username != null) {
-            logger.info("User Disconnected : " + username);
-
+            logger.info(username  + "has Disconnected");
+            User user = this.userService.makeUserOffline(username);
             MessageModel message = new MessageModel();
             message.setUser(username);
             message.setMessageType(String.valueOf(MessageType.LEAVE));
 
-            messageSendingOperations.convertAndSend("/chatApplication", message);
+            for (Room room : user.getRooms()) {
+                messageSendingOperations.convertAndSend("/sendMessage/" + room.getName() , message);
+            }
+
         }
     }
 }

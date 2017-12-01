@@ -1,37 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-  <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-      <title>Chat Application</title>
-      <link rel="stylesheet" href="/css/main.css" />
-      <link rel="stylesheet" href="/../../static/ css/bootstrap.css" th:href="@{/css/bootstrap.css}" />
-  </head>
-  <body>
-    <noscript>
-      <h2>Sorry! Your browser doesn't support Javascript</h2>
-    </noscript>
-    <div class="app">
-        <div class="top">
-            <div class="phrases-container">
-                <ul id="messageArea">
-                </ul>
-            </div>
-            <div class="users"></div>
-            <div class="channels"><input placeholder="search rooms"/></div>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/../../static/ css/bootstrap.css" th:href="@{/css/bootstrap.css}"/>
+</head>
+<body>
+<noscript>
+    <h2>Sorry! Your browser doesn't support Javascript</h2>
+</noscript>
+<div class="app">
+    <div class="top">
+        <div class="phrases-container">
+            <ul id="messageArea">
+            </ul>
         </div>
-        <div class="input">
-            <form id="messageForm" name="messageForm" nameForm="messageForm">
-                <input type="text" id="message" placeholder="Type a message..." autocomplete="off"/>
-                <button class="btn btn-success">Send</button>
-            </form>
+        <div class="users"></div>
+        <div class="channels">
+            <input id="joinchannel" class="btn btn-info"
+                   data-toggle="modal" data-target="#channelsModal" type="button" value="Join Channel"/>
+            <input id="leaveChannel" class="btn btn-danger" type="button" value="Leave Channel"/></div>
+    </div>
+    <div class="input">
+        <form id="messageForm" name="messageForm" nameForm="messageForm">
+            <input type="text" id="message" placeholder="Type a message..." autocomplete="off"/>
+            <button class="btn btn-success">Send</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="channelsModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Available Channels</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
+</div>
 
-    <script src="/../../static/js/jquery-3.1.1.min.js" th:src="@{/js/jquery-3.1.1.min.js}" type="text/javascript"></script>
-    <script src="/../../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" type="text/javascript"></script>
-    <script src="/../../static/js/sockjs.min.js" th:src="@{/js/sockjs.min.js}" type="text/javascript"></script>
-    <script src="/../../static/js/stomp.min.js" th:src="@{/js/stomp.min.js}" type="text/javascript"></script>
-    <script src="/../../static/js/main.js" th:src="@{/js/main.js}" type="text/javascript"></script>
+<script src="/../../static/js/jquery-3.1.1.min.js" th:src="@{/js/jquery-3.1.1.min.js}" type="text/javascript"></script>
+<script src="/../../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}" type="text/javascript"></script>
+<script src="/../../static/js/sockjs.min.js" th:src="@{/js/sockjs.min.js}" type="text/javascript"></script>
+<script src="/../../static/js/stomp.min.js" th:src="@{/js/stomp.min.js}" type="text/javascript"></script>
+<script src="/../../static/js/main.js" th:src="@{/js/main.js}" type="text/javascript"></script>
 
-  </body>
+</body>
 </html>

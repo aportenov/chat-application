@@ -17,6 +17,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(this.handler, "/llws");
+        registry.addHandler(this.handler, "/ws");
     }
 }

@@ -1,6 +1,7 @@
 package org.chatapp.controllers;
 
 
+import org.chatapp.enumerable.MessageType;
 import org.chatapp.models.MessageModel;
 import org.chatapp.models.RoomModel;
 import org.chatapp.services.MessageService;
@@ -11,6 +12,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -21,8 +23,6 @@ import java.util.List;
 @Controller
 public class ChatController {
 
-    private Principal principal;
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -32,19 +32,12 @@ public class ChatController {
     @MessageMapping("/sendMessage/{room}")
     @SendTo("/topic/room/{room}")
     public MessageModel chatRoom(@DestinationVariable String room,
-                                 @Payload MessageModel message) {
-        message.setUser(this.principal.getName());
-        this.messageService.addMessage(message);
-        return message;
-    }
-
-    @MessageMapping("/addUser/{room}")
-    @SendTo("/topic/room/{room}")
-    public MessageModel addUser(@DestinationVariable String room,
-                              @Payload MessageModel message,
-                             SimpMessageHeaderAccessor headerAccessor) {
-        this.principal = headerAccessor.getUser();
-        message.setUser(this.principal.getName());
+                                 @Payload MessageModel message,
+                                 SimpMessageHeaderAccessor headerAccessor) {
+        Principal principal = headerAccessor.getUser();
+        message.setUser(principal.getName());
+        message.setMessageType(String.valueOf(MessageType.CHAT));
+        message.setRoomName(room);
         this.messageService.addMessage(message);
 
         return message;
@@ -52,11 +45,31 @@ public class ChatController {
 
     @MessageMapping("/addRoom/{room}")
     @SendTo("/topic/room/{room}")
-    public MessageModel addRooms(@DestinationVariable String room,
-                              @Payload MessageModel message) {
+    public MessageModel addRoom(@DestinationVariable String room,
+                                @Payload MessageModel message,
+                                SimpMessageHeaderAccessor headerAccessor) {
 
-        message.setUser(this.principal.getName());
-        this.messageService.addMessage(message);
+        Principal principal = headerAccessor.getUser();
+        message.setUser(principal.getName());
+        message.setMessageType(String.valueOf(MessageType.JOIN));
+        message.setMessage(principal.getName() +  " has joined the channel");
+        message.setRoomName(room);
+        this.userService.addRoom(principal.getName(), room);
+
+        return message;
+    }
+
+    @MessageMapping("/leaveRoom/{room}")
+    @SendTo("/topic/room/{room}")
+    public MessageModel leaveRoom(@DestinationVariable String room,
+                          SimpMessageHeaderAccessor headerAccessor) {
+        Principal principal = headerAccessor.getUser();
+        this.userService.leaveRoom(principal.getName(), room);
+        MessageModel message = new MessageModel();
+        message.setUser(principal.getName());
+        message.setMessageType(String.valueOf(MessageType.LEAVE));
+        message.setMessage(principal.getName() +  " has left the channel");
+        message.setRoomName(room);
 
         return message;
     }
