@@ -62,4 +62,11 @@ public class RoomServiceImpl implements RoomService {
 
         return userViewModels;
     }
+
+    @Override
+    public Room create(String currentRoom) {
+        Room room = new Room();
+        room.setName(currentRoom);
+        return this.roomRepository.save(room);
+    }
 }

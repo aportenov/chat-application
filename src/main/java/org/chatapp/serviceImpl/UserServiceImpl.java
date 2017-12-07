@@ -76,9 +76,15 @@ public class UserServiceImpl implements UserService{
     public void addRoom(String username, String room) {
         User user = this.userRepository.findByUsername(username);
         Room currentRoom = this.roomService.findRoomByName(room);
+        if (currentRoom  == null) {
+            currentRoom = this.roomService.create(room);
+        }
+
         if (!user.getRooms().contains(currentRoom)){
             user.addRoom(currentRoom);
         }
+
+        this.userRepository.save(user);
     }
 
     @Override

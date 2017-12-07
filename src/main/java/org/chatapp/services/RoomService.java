@@ -14,4 +14,6 @@ public interface RoomService {
     String[] findRoomsByUser(String username);
 
     List<UserViewModel> findUsersRoomByName(String currentRoom);
+
+    Room create(String currentRoom);
 }

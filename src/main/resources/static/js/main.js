@@ -5,6 +5,8 @@
     var messageArea = document.querySelector('#messageArea');
     var channelsArea = document.querySelector("#joinchannel");
     var leaveChannelArea = document.querySelector("#leaveChannel");
+    var channelInput = document.querySelector("#createChannel");
+    var createChannelArea = document.querySelector("#createChannelForm");
 
     var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -119,6 +121,15 @@
                 userList.splice(index, 0, ul);
             }
         });
+    }
+
+    function createNewChannel() {
+        var roomName = channelInput.value.trim();
+        if (roomName) {
+            subscribeChannel(roomName);
+            createChannel(roomName);
+            joinChannel(roomName);
+        }
     }
 
     function joinChannel(channelName) {
@@ -261,6 +272,7 @@
     leaveChannelArea.addEventListener("click", leaveChannel, true);
     channelsArea.addEventListener("click", loadChannels, true);
     messageForm.addEventListener('submit', sendMessage, true);
+    createChannelArea.addEventListener('submit', createNewChannel, true);
 
 })
 (jQuery)
