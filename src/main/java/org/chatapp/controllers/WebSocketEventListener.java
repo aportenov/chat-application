@@ -1,6 +1,5 @@
 package org.chatapp.controllers;
 
-import org.chatapp.entities.Message;
 import org.chatapp.entities.Room;
 import org.chatapp.entities.User;
 import org.chatapp.enumerable.MessageType;
@@ -15,9 +14,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-
-import java.time.Instant;
-import java.util.Date;
 
 @Component
 public class WebSocketEventListener {
@@ -34,7 +30,7 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
         logger.info("Received a new web socket connection");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
+        String username = event.getUser().getName();
         this.userService.makeUserOnline(username);
     }
 
