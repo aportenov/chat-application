@@ -140,7 +140,6 @@
                     showChannel(channelName);
                 });
             channels.append(channel);
-            showChannel(channelName);
 
         }
         joinRoom(channelName);
@@ -159,7 +158,6 @@
             phrasesList.splice(index, 1);
             userList.splice(index, 1);
             leaveRoom(currentRoom)
-            loadUsers(currentRoom);
             unSubscribeChannel(index);
         }
 

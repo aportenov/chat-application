@@ -19,12 +19,12 @@ public class User implements UserDetails,  Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @NotNull
+    @NotNull
     @Column(name = "full_name")
     private String fullName;
 
     @NotNull
-    @Column(name = "user_name")
+    @Column(name = "user_name", unique = true)
     private String username;
 
     @NotNull
@@ -53,7 +53,7 @@ public class User implements UserDetails,  Serializable {
             inverseJoinColumns = @JoinColumn(name = "room_id"))
     private Set<Room> rooms;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

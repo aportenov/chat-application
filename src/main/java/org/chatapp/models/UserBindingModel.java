@@ -1,5 +1,8 @@
 package org.chatapp.models;
 
+import org.chatapp.valudations.IsPasswordsMatching;
+
+@IsPasswordsMatching
 public class UserBindingModel {
 
     private String username;

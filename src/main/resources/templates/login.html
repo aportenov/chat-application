@@ -22,24 +22,34 @@
                     <input name="username" type="username"/>
                 </label>
                 <label>Password
+                    <div class="form-group"
+                         th:classappend="${error} != null ? 'danger'">
                     <input name="password" type="password"/>
+                        <div class="form-control-feedback" th:text="${error}"/>
+                    </div>
                 </label>
                 <input value="Sign In" type="submit"/>
             </form>
         </div>
         <div class="panel__box" id="signUpBox">
-            <form action="/register" method="POST">
+            <form action="/register" method="POST" th:object="${user}">
                 <label>Username
-                    <input name="username" type="username"/>
+                    <input name="username" type="username" th:value="*{username}" th:placeholder="*{username}"/>
                 </label>
                 <label>Full Name
-                    <input name="fullName" type="username"/>
+                    <input name="fullName" type="username" th:value="*{fullName}" th:placeholder="*{fullName}"/>
                 </label>
                 <label>Password
                     <input name="password" type="password"/>
                 </label>
                 <label>Confirm password
+                    <div class="form-group"
+                         th:classappend="${#fields.hasErrors('global')} ? 'has-danger'">
                     <input name="confirmPassword" type="password"/>
+                        <div class="form-control-feedback" th:each="error : ${#fields.errors('global')}"
+                             th:text="${error}">
+                        </div>
+                    </div>
                 </label>
                 <input value="Register" type="submit"/>
             </form>

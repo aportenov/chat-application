@@ -416,3 +416,9 @@ a {
         opacity: 0;
     }
 }
+
+.has-danger , .danger {
+    color: red;
+    font-style: italic;
+    font-size: x-small;
+}

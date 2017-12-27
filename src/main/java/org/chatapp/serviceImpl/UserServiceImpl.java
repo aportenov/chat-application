@@ -4,6 +4,7 @@ import org.chatapp.entities.Role;
 import org.chatapp.entities.Room;
 import org.chatapp.entities.User;
 import org.chatapp.enumerable.Status;
+import org.chatapp.messages.Errors;
 import org.chatapp.models.UserBindingModel;
 import org.chatapp.repositories.RoleRepository;
 import org.chatapp.repositories.UserRepository;
@@ -12,6 +13,7 @@ import org.chatapp.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,9 +101,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public void makeUserOnline(String username) {
         User user = this.userRepository.findByUsername(username);
-//        if(user == null){
-//            throw new UsernameNotFoundException(UserNotFound);
-//        }
+        if(user == null){
+            throw new UsernameNotFoundException(Errors.INVALID_USER);
+        }
 
         user.setStatus(Status.ONLINE);
         this.userRepository.save(user);
@@ -110,9 +112,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public User makeUserOffline(String username) {
         User user = this.userRepository.findByUsername(username);
-//        if(user == null){
-//            throw new UsernameNotFoundException(UserNotFound);
-//        }
+        if(user == null){
+            throw new UsernameNotFoundException(Errors.INVALID_USER);
+        }
 
         user.setStatus(Status.OFFLINE);
         this.userRepository.save(user);
@@ -123,9 +125,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = this.userRepository.findByUsername(username);
-//        if(user == null){
-//            throw new UsernameNotFoundException(Errors.INVALID_CREDENTIALS);
-//        }
+        if(user == null){
+            throw new UsernameNotFoundException(Errors.INVALID_USER);
+        }
 
          return user;
     }
