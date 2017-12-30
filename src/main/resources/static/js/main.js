@@ -38,8 +38,8 @@
     function loadRooms() {
         $.ajax({
             type: 'GET',
-            url: '/user/rooms',
-            data: 'json',
+            url: '/users/rooms',
+            contentType: "application/json",
             success: function (rooms) {
                 for (var i = 0; i < rooms.length; i++) {
                     var currentRoom = rooms[i];
@@ -106,12 +106,12 @@
         $.ajax({
             type: 'GET',
             url: '/user/room/' + channelName,
-            data: 'json',
+            contentType: "application/json",
             success: function (users) {
                 for (var i = 0; i < users.length; i++) {
                     var messageElement = document.createElement('li');
                     var currentUser = users[i];
-                    appendUserAvatar(currentUser.username, messageElement);
+                    appendUserAvatar(currentUser.username, currentUser.image, messageElement);
                     var image = currentUser.image;
                     ul.appendChild(messageElement);
                     ul.scrollTop = ul.scrollHeight;
@@ -183,11 +183,18 @@
         event.preventDefault();
     }
 
-    function appendUserAvatar(user, messageElement) {
+    function appendUserAvatar(user, image, messageElement) {
         var avatarElement = document.createElement('i');
-        var avatarText = document.createTextNode(user[0]);
-        avatarElement.appendChild(avatarText);
-        avatarElement.style['background-color'] = getAvatarColor(user);
+        if (image) {
+            var avatarImage = document.createElement('img');
+            avatarImage.src = image;
+            avatarImage.className = "img-circle";
+            avatarElement.appendChild(avatarImage);
+        } else {
+            var avatarText = document.createTextNode(user[0]);
+            avatarElement.appendChild(avatarText);
+            avatarElement.style['background-color'] = getAvatarColor(user);
+        }
 
         messageElement.appendChild(avatarElement);
 
@@ -209,7 +216,7 @@
             messageElement.classList.add('event-message');
         } else {
             messageElement.classList.add('chat-message');
-            appendUserAvatar(message.user, messageElement);
+            appendUserAvatar(message.user, message.image, messageElement);
         }
 
         var textElement = document.createElement('p');
@@ -242,7 +249,7 @@
         $.ajax({
             type: 'GET',
             url: '/rooms/all',
-            data: 'json',
+            contentType: "application/json",
             success: function (rooms) {
                 $(".modal-body").empty();
                 for (var i = 0; i < rooms.length; i++) {

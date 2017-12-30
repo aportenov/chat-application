@@ -166,7 +166,7 @@ a {
     padding: 7px 10px;
 }
 
-.panel__box input[type="submit"] {
+.panel__box .signin, .panel__box .signout{
     float: right;
     cursor: pointer;
     border: none;
@@ -421,4 +421,20 @@ a {
     color: red;
     font-style: italic;
     font-size: x-small;
+}
+
+#fb {
+    display: block;
+    max-height: 35%;
+    width: 45%;
+    float: right;
+    border: none;
+    cursor: pointer;
+    padding: 11px 40px;
+    border-radius: 30px;
+    background-image: url("/images/fb.png");
+    background-size: cover !important;
+    background-repeat: no-repeat;
+    margin-top: 10px;
+    z-index: -1;
 }

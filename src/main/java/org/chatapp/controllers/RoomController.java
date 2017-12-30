@@ -1,5 +1,6 @@
 package org.chatapp.controllers;
 
+import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.User;
 import org.chatapp.models.UserViewModel;
 import org.chatapp.services.RoomService;
@@ -31,7 +32,7 @@ public class RoomController {
     public ResponseEntity<String[]> getAllRooms(){
         String[] rooms;
         if (isUserAuhtenticated()) {
-            User currentUser = (User) authentication.getPrincipal();
+            AbstractUser currentUser = (AbstractUser) authentication.getPrincipal();
             rooms = this.roomService.findRoomsByUser(currentUser.getUsername());
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -51,11 +52,11 @@ public class RoomController {
         return responseEntity;
     }
 
-    @GetMapping("/user/rooms")
+    @GetMapping("/users/rooms")
     public ResponseEntity<String[]> getUserRooms() {
         String[] rooms;
         if (isUserAuhtenticated()) {
-            User currentUser = (User) authentication.getPrincipal();
+            AbstractUser currentUser = (AbstractUser) authentication.getPrincipal();
             rooms = this.userService.findRoomsByUser(currentUser.getUsername());
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
@@ -72,6 +73,6 @@ public class RoomController {
     private Boolean isUserAuhtenticated(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         this.authentication = authentication;
-        return authentication.getPrincipal() instanceof User;
+        return authentication.getPrincipal() instanceof AbstractUser;
     }
 }

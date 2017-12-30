@@ -22,7 +22,7 @@ public class Room implements Serializable{
     private String password;
 
     @ManyToMany(mappedBy = "rooms")
-    private Set<User> users;
+    private Set<AbstractUser> users;
 
     public Room() {
         this.users = new LinkedHashSet<>();
@@ -52,7 +52,7 @@ public class Room implements Serializable{
         this.password = password;
     }
 
-    public Set<User> getUsers() {
+    public Set<AbstractUser> getUsers() {
         return users;
     }
 

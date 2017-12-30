@@ -6,6 +6,7 @@ public class MessageModel {
     private String user;
     private String message;
     private String roomName;
+    private String image;
 
     public String getMessageType() {
         return messageType;
@@ -37,5 +38,13 @@ public class MessageModel {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

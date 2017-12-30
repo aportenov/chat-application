@@ -1,5 +1,6 @@
 package org.chatapp.serviceImpl;
 
+import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.Message;
 import org.chatapp.entities.Room;
 import org.chatapp.entities.User;
@@ -34,7 +35,7 @@ public class MessageServiceImpl implements MessageService{
     @Override
     public void addMessage(MessageModel message) {
         Room room = this.roomService.findRoomByName(message.getRoomName());
-        User user = this.userService.findUserByName(message.getUser());
+        AbstractUser user = this.userService.findUserByName(message.getUser());
         Message chatMessage = new Message();
         chatMessage.setMessage(message.getMessage());
         chatMessage.setDate(Date.from(Instant.now()));

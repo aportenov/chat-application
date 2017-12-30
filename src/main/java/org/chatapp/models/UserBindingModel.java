@@ -6,9 +6,10 @@ import org.chatapp.valudations.IsPasswordsMatching;
 public class UserBindingModel {
 
     private String username;
-    private String fullName;
+    private String email;
     private String password;
     private String confirmPassword;
+    private String image;
 
     public String getUsername() {
         return username;
@@ -18,12 +19,12 @@ public class UserBindingModel {
         this.username = username;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -40,5 +41,13 @@ public class UserBindingModel {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

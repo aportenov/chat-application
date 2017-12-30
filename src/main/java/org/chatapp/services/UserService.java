@@ -1,6 +1,6 @@
 package org.chatapp.services;
 
-import org.chatapp.entities.User;
+import org.chatapp.entities.AbstractUser;
 import org.chatapp.models.UserBindingModel;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -10,7 +10,7 @@ public interface UserService extends UserDetailsService  {
 
     String[] findRoomsByUser(String username);
 
-    User findUserByName(String username);
+    AbstractUser findUserByName(String username);
 
     void addRoom(String username, String room);
 
@@ -18,5 +18,5 @@ public interface UserService extends UserDetailsService  {
 
     void makeUserOnline(String username);
 
-    User makeUserOffline(String username);
+    AbstractUser makeUserOffline(String username);
 }

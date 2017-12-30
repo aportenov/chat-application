@@ -1,5 +1,6 @@
 package org.chatapp.controllers;
 
+import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.Room;
 import org.chatapp.entities.User;
 import org.chatapp.enumerable.MessageType;
@@ -41,7 +42,7 @@ public class WebSocketEventListener {
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         if (username != null) {
             logger.info(username  + "has Disconnected");
-            User user = this.userService.makeUserOffline(username);
+            AbstractUser user = this.userService.makeUserOffline(username);
             MessageModel message = new MessageModel();
             message.setUser(username);
             message.setMessageType(String.valueOf(MessageType.LEAVE));

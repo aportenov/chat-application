@@ -1,11 +1,13 @@
 package org.chatapp.serviceImpl;
 
+import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.Role;
 import org.chatapp.entities.Room;
 import org.chatapp.entities.User;
 import org.chatapp.enumerable.Status;
 import org.chatapp.messages.Errors;
 import org.chatapp.models.UserBindingModel;
+import org.chatapp.repositories.AbstractUserRepository;
 import org.chatapp.repositories.RoleRepository;
 import org.chatapp.repositories.UserRepository;
 import org.chatapp.services.RoomService;
@@ -30,7 +32,7 @@ public class UserServiceImpl implements UserService{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
+    public UserServiceImpl(AbstractUserRepository userRepository,
                            RoleRepository roleRepository,
                            ModelMapper modelMapper,
                            RoomService roomService,
@@ -45,9 +47,9 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void save(UserBindingModel userBindingModel) {
-        User user = new User();
+        AbstractUser user = new User();
         user.setUsername(userBindingModel.getUsername());
-        user.setFullName(userBindingModel.getFullName());
+        user.setEmail(userBindingModel.getEmail());
         String encryptedPassword = this.bCryptPasswordEncoder.encode(userBindingModel.getPassword());
         user.setPassword(encryptedPassword);
         user.setStatus(Status.OFFLINE);
@@ -62,21 +64,21 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public String[] findRoomsByUser(String username) {
-        User user = userRepository.findByUsername(username);
+        AbstractUser user = this.userRepository.findOneByUsername(username);
         String[] userRooms = user.getRooms().stream().map(r -> r.getName()).toArray(String[]::new);
 
         return userRooms;
     }
 
     @Override
-    public User findUserByName(String username) {
-        User user = this.userRepository.findByUsername(username);
+    public AbstractUser findUserByName(String username) {
+        AbstractUser user = this.userRepository.findOneByUsername(username);
         return user;
     }
 
     @Override
     public void addRoom(String username, String room) {
-        User user = this.userRepository.findByUsername(username);
+        AbstractUser user = this.userRepository.findOneByUsername(username);
         Room currentRoom = this.roomService.findRoomByName(room);
         if (currentRoom  == null) {
             currentRoom = this.roomService.create(room);
@@ -91,7 +93,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void leaveRoom(String username, String room) {
-        User user = this.userRepository.findByUsername(username);
+        AbstractUser user = this.userRepository.findOneByUsername(username);
         Room roomToLeft = this.roomService.findRoomByName(room);
         if (user.getRooms().contains(roomToLeft)) {
             user.removeRoom(roomToLeft);
@@ -100,7 +102,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void makeUserOnline(String username) {
-        User user = this.userRepository.findByUsername(username);
+        AbstractUser user = this.userRepository.findOneByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException(Errors.INVALID_USER);
         }
@@ -110,8 +112,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User makeUserOffline(String username) {
-        User user = this.userRepository.findByUsername(username);
+    public AbstractUser makeUserOffline(String username) {
+        AbstractUser user = this.userRepository.findOneByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException(Errors.INVALID_USER);
         }
@@ -124,7 +126,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = this.userRepository.findByUsername(username);
+        AbstractUser user = this.userRepository.findOneByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException(Errors.INVALID_USER);
         }
