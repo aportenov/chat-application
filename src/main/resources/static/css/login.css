@@ -156,7 +156,8 @@ a {
     opacity: 0;
 }
 
-.panel__box input[type="username"], .panel__box input[type="password"] {
+.panel__box input[type="username"], .panel__box input[type="password"],
+.panel__box input[type="file"]{
     margin-top: 10px;
     width: 100%;
     float: left;
@@ -420,7 +421,8 @@ a {
 .has-danger , .danger {
     color: red;
     font-style: italic;
-    font-size: x-small;
+    font-size: small;
+    float: right;
 }
 
 #fb {

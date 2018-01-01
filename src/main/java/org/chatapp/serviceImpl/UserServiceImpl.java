@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final AbstractUserRepository abstractUserRepository;
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
     private final RoomService roomService;
@@ -33,11 +34,13 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     public UserServiceImpl(AbstractUserRepository userRepository,
+                           AbstractUserRepository abstractUserRepository,
                            RoleRepository roleRepository,
                            ModelMapper modelMapper,
                            RoomService roomService,
                            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.abstractUserRepository = abstractUserRepository;
         this.roleRepository = roleRepository;
         this.modelMapper = modelMapper;
         this.roomService = roomService;
@@ -122,6 +125,17 @@ public class UserServiceImpl implements UserService{
         this.userRepository.save(user);
 
         return user;
+    }
+
+    @Override
+    public Boolean findUserByEmail(String email) {
+        AbstractUser user = null;
+        if (email != null) {
+            user  =  this.abstractUserRepository.findOneByEmail(email);
+
+        }
+
+        return user == null ? true : false;
     }
 
     @Override

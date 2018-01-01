@@ -1,4 +1,4 @@
-package org.chatapp.valudations;
+package org.chatapp.validations;
 
 import org.springframework.messaging.handler.annotation.Payload;
 
@@ -10,10 +10,10 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Constraint(validatedBy = IsPasswordsMatchingValidator.class)
-public @interface IsPasswordsMatching {
+@Constraint(validatedBy = IsUserExistValidator.class)
+public @interface IsUserExist {
 
-    String message() default "Password does not match";
+    String message() default "User already exist";
 
     Class<?>[] groups() default {};
 

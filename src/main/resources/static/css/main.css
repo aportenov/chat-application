@@ -17,6 +17,8 @@ html {
     padding: 1%;
     width: 100%;
     background: #616fa5;
+    margin-top: 3%;
+    border: none;
 }
 .app .top:after {
     content: '';
@@ -25,7 +27,7 @@ html {
 }
 .app .phrases-container {
     width: 69%;
-    height: 600px;
+    height: 550px;
     background: #fff;
     border: 1px solid #ccc;
     overflow: hidden;
@@ -38,7 +40,7 @@ html {
 }
 .app .users {
     width: 14%;
-    height: 600px;
+    height: 550px;
     margin-left: 1%;
     background: #fff;
     border: 1px solid #ccc;
@@ -47,7 +49,7 @@ html {
 }
 .app .channels {
     width: 14%;
-    height: 600px;
+    height: 550px;
     margin-left: 1%;
     background: #fff;
     border: 1px solid #ccc;
@@ -188,4 +190,27 @@ li i img.img-circle {
 
 li span {
     color: #178cbe;
+}
+
+.navbar-login
+{
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+body div[role="navigation"] {
+    height: 40px;
+    background: #616fa5;
+}
+
+strong {
+    color: white;
 }

@@ -18,15 +18,14 @@
     <div class="panel__wrap">
         <div class="panel__box active" id="signInBox">
             <form action="/login" method="POST" th:object="${user}">
+                <div class="danger" th:if="${error}">
+                    <span th:text="${error}"/>
+                </div>
                 <label>Email
                     <input name="username" type="username" th:value="*{email}" th:placeholder="*{email}"/>
                 </label>
                 <label>Password
-                    <div class="form-group"
-                         th:classappend="${error} != null ? 'danger'">
-                        <input name="password" type="password"/>
-                        <div class="form-control-feedback" th:text="${error}"/>
-                    </div>
+                    <input name="password" type="password"/>
                 </label>
                 <input class="signin" value="Sign In" type="submit"/>
             </form>
@@ -37,10 +36,15 @@
                     <input type="submit" id="fb" value=""/>
                 </label>
             </form>
-            <!--<div th:replace="connect/facebookConnect"/>-->
         </div>
         <div class="panel__box" id="signUpBox">
             <form action="/register" enctype="multipart/form-data" method="POST" th:object="${user}">
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('global')} ? 'has-danger'">
+                    <div class="form-control-feedback" th:each="error : ${#fields.errors('global')}"
+                         th:text="${error}">
+                    </div>
+                </div>
                 <label>Username
                     <input name="username" type="username" th:value="*{username}" th:placeholder="*{username}"/>
                 </label>
@@ -51,13 +55,7 @@
                     <input name="password" type="password"/>
                 </label>
                 <label>Confirm password
-                    <div class="form-group"
-                         th:classappend="${#fields.hasErrors('global')} ? 'has-danger'">
-                        <input name="confirmPassword" type="password"/>
-                        <div class="form-control-feedback" th:each="error : ${#fields.errors('global')}"
-                             th:text="${error}">
-                        </div>
-                    </div>
+                    <input name="confirmPassword" type="password"/>
                 </label>
                 <label>Upload Image/Avatar
                     <input type="file" id="file" class="filestyle" data-input="false" name="file"/>

@@ -19,4 +19,6 @@ public interface UserService extends UserDetailsService  {
     void makeUserOnline(String username);
 
     AbstractUser makeUserOffline(String username);
+
+    Boolean findUserByEmail(String email);
 }

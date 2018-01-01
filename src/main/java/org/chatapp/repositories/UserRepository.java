@@ -2,6 +2,7 @@ package org.chatapp.repositories;
 
 import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.User;
+import org.chatapp.models.UserBindingModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;

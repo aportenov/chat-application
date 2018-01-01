@@ -1,4 +1,4 @@
-package org.chatapp.valudations;
+package org.chatapp.validations;
 
 import org.chatapp.models.UserBindingModel;
 

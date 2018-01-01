@@ -28,7 +28,8 @@ public abstract class AbstractUser implements UserDetails, Serializable {
     @Column(name = "user_name")
     private String username;
 
-    @Basic(optional = true)
+    @NotNull
+    @Basic(optional = false)
     private String password;
 
     @Column(columnDefinition = "TEXT", nullable = true)
@@ -44,8 +45,10 @@ public abstract class AbstractUser implements UserDetails, Serializable {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-
     private Status status;
+
+    @Column(name = "type", insertable = false, updatable = false)
+    private String type;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_rooms",
@@ -177,5 +180,13 @@ public abstract class AbstractUser implements UserDetails, Serializable {
 
     public void removeRoom(Room room){
         this.getRooms().remove(room);
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
