@@ -6,10 +6,14 @@ body,
 html {
     margin: 0;
     padding: 0;
-    width: 100%;
-    height: 100%;
+    min-width:300px;
+    width: auto !important;
+    width:1000px;
     font-size: 15px;
     border: 1px solid #c8c8c8;
+    min-height: 550px;
+    height: auto !important;
+    height: 550px;
 
 }
 
@@ -213,4 +217,8 @@ body div[role="navigation"] {
 
 strong {
     color: white;
+}
+
+.img-circle {
+    width: 80px;
 }

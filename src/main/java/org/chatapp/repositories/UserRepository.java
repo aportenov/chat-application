@@ -11,10 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@NoRepositoryBean
-public interface UserRepository<T extends AbstractUser> extends JpaRepository<T , Long>{
+@Repository
+public interface UserRepository extends JpaRepository<AbstractUser , Long>{
 
-    T findOneByUsername(String user);
+    @Query(value = "SELECT u FROM AbstractUser AS u LEFT JOIN u.rooms AS r WHERE r.name = :roomName")
+    List<AbstractUser> findAllByRoomName(@Param("roomName") String roomName);
 
+    AbstractUser findOneByEmail(String email);
+
+    AbstractUser findOneByUsername(String username);
 }
 

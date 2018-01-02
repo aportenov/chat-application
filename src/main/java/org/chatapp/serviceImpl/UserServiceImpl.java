@@ -7,7 +7,6 @@ import org.chatapp.entities.User;
 import org.chatapp.enumerable.Status;
 import org.chatapp.messages.Errors;
 import org.chatapp.models.UserBindingModel;
-import org.chatapp.repositories.AbstractUserRepository;
 import org.chatapp.repositories.RoleRepository;
 import org.chatapp.repositories.UserRepository;
 import org.chatapp.services.RoomService;
@@ -26,21 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
-    private final AbstractUserRepository abstractUserRepository;
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
     private final RoomService roomService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserServiceImpl(AbstractUserRepository userRepository,
-                           AbstractUserRepository abstractUserRepository,
+    public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
                            ModelMapper modelMapper,
                            RoomService roomService,
                            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
-        this.abstractUserRepository = abstractUserRepository;
         this.roleRepository = roleRepository;
         this.modelMapper = modelMapper;
         this.roomService = roomService;
@@ -54,6 +50,7 @@ public class UserServiceImpl implements UserService{
         user.setUsername(userBindingModel.getUsername());
         user.setEmail(userBindingModel.getEmail());
         String encryptedPassword = this.bCryptPasswordEncoder.encode(userBindingModel.getPassword());
+        user.setImage(userBindingModel.getImage());
         user.setPassword(encryptedPassword);
         user.setStatus(Status.OFFLINE);
         user.setAccountNonExpired(true);
@@ -131,7 +128,7 @@ public class UserServiceImpl implements UserService{
     public Boolean findUserByEmail(String email) {
         AbstractUser user = null;
         if (email != null) {
-            user  =  this.abstractUserRepository.findOneByEmail(email);
+            user  =  this.userRepository.findOneByEmail(email);
 
         }
 
@@ -140,7 +137,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        AbstractUser user = this.userRepository.findOneByUsername(username);
+        AbstractUser user = this.userRepository.findOneByEmail(username);
         if(user == null){
             throw new UsernameNotFoundException(Errors.INVALID_USER);
         }

@@ -7,6 +7,7 @@
     var leaveChannelArea = document.querySelector("#leaveChannel");
     var channelInput = document.querySelector("#createChannel");
     var createChannelArea = document.querySelector("#createChannelForm");
+    var currentUserList = document.querySelector(".users");
 
     var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -96,31 +97,8 @@
         var currentPhrases = $(".phrases-container");
         currentPhrases.empty();
         currentPhrases.append(phrasesList[index]);
-        var currentUserList = $(".users");
         currentUserList.empty();
         currentUserList.append(userList[index]); //userList is empty; no users appended to div
-    }
-
-    function loadUsers(channelName) {
-        var ul = document.createElement('ul');
-        $.ajax({
-            type: 'GET',
-            url: '/user/room/' + channelName,
-            contentType: "application/json",
-            success: function (users) {
-                for (var i = 0; i < users.length; i++) {
-                    var messageElement = document.createElement('li');
-                    var currentUser = users[i];
-                    appendUserAvatar(currentUser.username, currentUser.image, messageElement);
-                    var image = currentUser.image;
-                    ul.appendChild(messageElement);
-                    ul.scrollTop = ul.scrollHeight;
-                }
-                var channelName = $('.current').text();
-                var index = channelsList.indexOf(channelName);
-                userList.splice(index, 0, ul);
-            }
-        });
     }
 
     function createNewChannel() {
@@ -270,6 +248,30 @@
                                 joinChannel(roomName);
                             }));
                 }
+            }
+        });
+    }
+
+    function loadUsers(channelName) {
+        var ul = document.createElement('ul');
+        $.ajax({
+            type: 'GET',
+            url: '/user/room/' + channelName,
+            contentType: "application/json",
+            success: function (users) {
+                for (var i = 0; i < users.length; i++) {
+                    var messageElement = document.createElement('li');
+                    var currentUser = users[i];
+                    appendUserAvatar(currentUser.username, currentUser.image, messageElement);
+                    var image = currentUser.image;
+                    ul.appendChild(messageElement);
+                    ul.scrollTop = ul.scrollHeight;
+
+                }
+                var channelName = $('.current').text();
+                var index = channelsList.indexOf(channelName);
+                userList.splice(index, 0, ul);
+                currentUserList.append(userList[index]);
             }
         });
     }

@@ -1,9 +1,10 @@
 package org.chatapp.serviceImpl;
 
+import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.SocialUser;
+import org.chatapp.repositories.UserRepository;
 import org.springframework.social.facebook.api.User;
 import org.chatapp.repositories.RoleRepository;
-import org.chatapp.repositories.SocialUserRepository;
 import org.chatapp.services.SocialUserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,11 +16,11 @@ import javax.transaction.Transactional;
 @Service
 public class SocialUserServiceImpl implements SocialUserService {
 
-    private final SocialUserRepository socialUserRepository;
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public SocialUserServiceImpl(SocialUserRepository socialUserRepository, RoleRepository roleRepository) {
-        this.socialUserRepository = socialUserRepository;
+    public SocialUserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
 
@@ -34,7 +35,7 @@ public class SocialUserServiceImpl implements SocialUserService {
         user.setEmail(email);
         user.setImage(image);
         user.addRole(this.roleRepository.findOne(1L));
-        this.socialUserRepository.save(user);
+        this.userRepository.save(user);
 
         return user;
     }
@@ -42,7 +43,7 @@ public class SocialUserServiceImpl implements SocialUserService {
     @Override
     public void proceedFbUser(User facebookUser, String image) {
         String email = facebookUser.getEmail();
-        SocialUser socialUser = this.socialUserRepository.findOneByEmail(email);
+        AbstractUser socialUser = this.userRepository.findOneByEmail(email);
         if (socialUser == null) {
             socialUser = registerFbUser(facebookUser, image, email);
         }
@@ -50,7 +51,7 @@ public class SocialUserServiceImpl implements SocialUserService {
         loginUser(socialUser);
     }
 
-    private void loginUser(SocialUser socialUser) {
+    private void loginUser(AbstractUser socialUser) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(socialUser, null, socialUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

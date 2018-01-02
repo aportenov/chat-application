@@ -1,7 +1,6 @@
 package org.chatapp.validations;
 
 import org.chatapp.models.UserBindingModel;
-import org.chatapp.repositories.AbstractUserRepository;
 import org.chatapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
