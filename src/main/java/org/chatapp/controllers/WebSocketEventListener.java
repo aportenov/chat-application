@@ -2,7 +2,6 @@ package org.chatapp.controllers;
 
 import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.Room;
-import org.chatapp.entities.User;
 import org.chatapp.enumerable.MessageType;
 import org.chatapp.models.MessageModel;
 import org.chatapp.services.UserService;
@@ -32,17 +31,17 @@ public class WebSocketEventListener {
         logger.info("Received a new web socket connection");
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = event.getUser().getName();
-        this.userService.makeUserOnline(username);
+        this.userService.changeUserStatus(username);
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
+        String username = event.getUser().getName();
         if (username != null) {
             logger.info(username  + "has Disconnected");
-            AbstractUser user = this.userService.makeUserOffline(username);
+            AbstractUser user = this.userService.changeUserStatus(username);
             MessageModel message = new MessageModel();
             message.setUser(username);
             message.setMessageType(String.valueOf(MessageType.LEAVE));

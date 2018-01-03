@@ -101,28 +101,17 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void makeUserOnline(String username) {
+    public AbstractUser changeUserStatus(String username) {
         AbstractUser user = this.userRepository.findOneByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException(Errors.INVALID_USER);
         }
 
-        user.setStatus(Status.ONLINE);
+        user.setStatus(user.getStatus().equals(String.valueOf(Status.ONLINE)) ? Status.OFFLINE : Status.ONLINE);
         this.userRepository.save(user);
-    }
-
-    @Override
-    public AbstractUser makeUserOffline(String username) {
-        AbstractUser user = this.userRepository.findOneByUsername(username);
-        if(user == null){
-            throw new UsernameNotFoundException(Errors.INVALID_USER);
-        }
-
-        user.setStatus(Status.OFFLINE);
-        this.userRepository.save(user);
-
         return user;
     }
+
 
     @Override
     public Boolean findUserByEmail(String email) {
