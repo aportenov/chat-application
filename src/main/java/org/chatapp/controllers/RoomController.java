@@ -28,7 +28,7 @@ public class RoomController {
 
     private Authentication authentication;
 
-    @GetMapping("/rooms/all")
+    @GetMapping("/room/all")
     public ResponseEntity<String[]> getAllRooms(){
         String[] rooms;
         if (isUserAuhtenticated()) {

@@ -34,10 +34,10 @@ html {
     height: 550px;
     background: #fff;
     border: 1px solid #ccc;
-    /*overflow: hidden;*/
+    overflow: hidden;
     float: left;
-    overflow: scroll;
-    display: inline-block;
+    overflow-y: auto;
+    position: relative;
 
 }
 .app .phrases-container .phrases {
@@ -52,6 +52,7 @@ html {
     border: 1px solid #ccc;
     float: left;
     padding: 1%;
+    position: relative;
 }
 .app .channels {
     width: 14%;
@@ -128,6 +129,7 @@ input,
 .app .chat-message {
     margin-left: 20px;
     list-style-type: none;
+    border-bottom: 1px solid #f4f4f4;
 }
 
 .app .chat-message i,
@@ -196,6 +198,10 @@ li i img.img-circle {
 
 li span {
     color: #178cbe;
+}
+
+li span, li p {
+    margin-left: 10px;
 }
 
 .navbar-login

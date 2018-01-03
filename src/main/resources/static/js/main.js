@@ -1,13 +1,14 @@
 (function ($) {
 
-    var messageForm = document.querySelector('#messageForm');
-    var messageInput = document.querySelector('#message');
-    var messageArea = document.querySelector('#messageArea');
-    var channelsArea = document.querySelector("#joinchannel");
-    var leaveChannelArea = document.querySelector("#leaveChannel");
-    var channelInput = document.querySelector("#createChannel");
-    var createChannelArea = document.querySelector("#createChannelForm");
-    var currentUserList = document.querySelector(".users");
+    var messageForm = document.querySelector('#messageForm'),
+        messageInput = document.querySelector('#message'),
+        messageArea = document.querySelector('#messageArea'),
+        channelsArea = document.querySelector("#joinchannel"),
+        leaveChannelArea = document.querySelector("#leaveChannel"),
+        channelInput = document.querySelector("#createChannel"),
+        createChannelArea = document.querySelector("#createChannelForm"),
+        currentUserList = document.querySelector(".users"),
+        phrasesContainer = document.querySelector(".phrases-container");
 
     var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
@@ -204,7 +205,7 @@
 
         var currentChannelUl = phrasesList[channelsList.indexOf(message.roomName)];
         currentChannelUl.appendChild(messageElement);
-        currentChannelUl.scrollTop = currentChannelUl.scrollHeight;
+        phrasesContainer.scrollTop = phrasesContainer.scrollHeight;
 
     }
 
@@ -226,7 +227,7 @@
     function loadChannels() {
         $.ajax({
             type: 'GET',
-            url: '/rooms/all',
+            url: '/room/all',
             contentType: "application/json",
             success: function (rooms) {
                 $(".modal-body").empty();
