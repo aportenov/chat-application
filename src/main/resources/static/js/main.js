@@ -10,6 +10,10 @@
         currentUserList = document.querySelector(".users"),
         phrasesContainer = document.querySelector(".phrases-container");
 
+    var tubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/,
+        imageRegExp = /(https?:\/\/.*\.(?:png|jpg))/,
+        urlRegExp = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+
     var colors = [
         '#2196F3', '#32c787', '#00BCD4', '#ff5652',
         '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
@@ -201,8 +205,7 @@
         var textElement = document.createElement('p');
         var currentMessage,
             embedCode;
-        var tubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/,
-            imageRegExp = /(https?:\/\/.*\.(?:png|jpg))/;
+
         var matchTube = message.message.match(tubeRegExp),
             matchImg = imageRegExp.test(message.message);
 
@@ -214,12 +217,17 @@
             currentMessage.setAttribute("src", "//www.youtube.com/embed/" + embedCode + "?rel=0");
             currentMessage.setAttribute("frameborder", "0");
             currentMessage.setAttribute("allowFullScreen", "");
-        }else if (matchImg) {
+        } else if (matchImg) {
             currentMessage = document.createElement('img');
             currentMessage.setAttribute("src", message.message);
             currentMessage.setAttribute("width", "300");
             currentMessage.setAttribute("height", "200");
-        }else {
+        } else if (urlRegExp.test(message.message)) {
+           currentMessage = document.createElement("a");
+           currentMessage.setAttribute("href", message.message);
+           currentMessage.setAttribute("target","_blank");
+           currentMessage.innerHTML = message.message;
+        } else {
             currentMessage = document.createTextNode(message.message);
         }
 
