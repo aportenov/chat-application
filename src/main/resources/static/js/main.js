@@ -199,8 +199,31 @@
         }
 
         var textElement = document.createElement('p');
-        var messageText = document.createTextNode(message.message);
-        textElement.appendChild(messageText);
+        var currentMessage,
+            embedCode;
+        var tubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/,
+            imageRegExp = /(https?:\/\/.*\.(?:png|jpg))/;
+        var matchTube = message.message.match(tubeRegExp),
+            matchImg = imageRegExp.test(message.message);
+
+        if (matchTube && matchTube[2].length == 11) {
+            embedCode = matchTube[2];
+            currentMessage = document.createElement('iframe');
+            currentMessage.setAttribute("width", "300");
+            currentMessage.setAttribute("height", "200");
+            currentMessage.setAttribute("src", "//www.youtube.com/embed/" + embedCode + "?rel=0");
+            currentMessage.setAttribute("frameborder", "0");
+            currentMessage.setAttribute("allowFullScreen", "");
+        }else if (matchImg) {
+            currentMessage = document.createElement('img');
+            currentMessage.setAttribute("src", message.message);
+            currentMessage.setAttribute("width", "300");
+            currentMessage.setAttribute("height", "200");
+        }else {
+            currentMessage = document.createTextNode(message.message);
+        }
+
+        textElement.appendChild(currentMessage);
         messageElement.appendChild(textElement);
 
         var currentChannelUl = phrasesList[channelsList.indexOf(message.roomName)];
