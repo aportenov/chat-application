@@ -1,5 +1,6 @@
 package org.chatapp.controllers;
 
+import org.chatapp.io.Writer;
 import org.chatapp.models.UserBindingModel;
 import org.chatapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +25,24 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Writer fileWriter;
+
     @PostMapping("/register")
     public String register(@RequestParam("file") MultipartFile file,
             @Valid @ModelAttribute UserBindingModel userBindingModel,
                            BindingResult bindingResult,
                            RedirectAttributes redirectAttributes) throws IOException {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);;
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
             redirectAttributes.addFlashAttribute("user", userBindingModel);
 
             return "redirect:/login";
         }
 
         if (!file.isEmpty()) {
-            String image = BASE64_PNG + Base64.getEncoder().encodeToString(file.getBytes());
-            userBindingModel.setImage(image);
+            String fileURL = this.fileWriter.uploadFile(file.getBytes(), userBindingModel.getEmail(), file.getContentType());
+            userBindingModel.setImage(fileURL);
         }
 
         this.userService.save(userBindingModel);

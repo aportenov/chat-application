@@ -2,6 +2,7 @@ package org.chatapp.serviceImpl;
 
 import org.chatapp.entities.AbstractUser;
 import org.chatapp.entities.SocialUser;
+import org.chatapp.enumerable.Status;
 import org.chatapp.repositories.UserRepository;
 import org.springframework.social.facebook.api.User;
 import org.chatapp.repositories.RoleRepository;
@@ -34,6 +35,7 @@ public class SocialUserServiceImpl implements SocialUserService {
         user.setUsername(facebookUser.getName());
         user.setEmail(email);
         user.setImage(image);
+        user.setStatus(Status.OFFLINE);
         user.addRole(this.roleRepository.findOne(1L));
         this.userRepository.save(user);
 

@@ -102,7 +102,7 @@
         var currentPhrases = $(".phrases-container");
         currentPhrases.empty();
         currentPhrases.append(phrasesList[index]);
-        currentUserList.empty();
+        $('.users').empty();
         currentUserList.append(userList[index]); //userList is empty; no users appended to div
     }
 
@@ -140,7 +140,7 @@
             channelsList.splice(index, 1);
             phrasesList.splice(index, 1);
             userList.splice(index, 1);
-            leaveRoom(currentRoom)
+            leaveRoom(currentRoom);
             unSubscribeChannel(index);
         }
 
@@ -193,10 +193,9 @@
         var message = JSON.parse(payload.body);
         var messageElement = document.createElement('li');
 
-        if (message.messageType === 'JOIN') {
+        if (message.messageType === 'JOIN' || message.messageType === 'LEAVE') {
             messageElement.classList.add('event-message');
-        } else if (message.messageType === 'LEAVE') {
-            messageElement.classList.add('event-message');
+            loadUsers(message.roomName);
         } else {
             messageElement.classList.add('chat-message');
             appendUserAvatar(message.user, message.image, messageElement);
@@ -220,13 +219,13 @@
         } else if (matchImg) {
             currentMessage = document.createElement('img');
             currentMessage.setAttribute("src", message.message);
-            currentMessage.setAttribute("width", "300");
-            currentMessage.setAttribute("height", "200");
+            currentMessage.setAttribute("width", "400");
+            currentMessage.setAttribute("height", "300");
         } else if (urlRegExp.test(message.message)) {
-           currentMessage = document.createElement("a");
-           currentMessage.setAttribute("href", message.message);
-           currentMessage.setAttribute("target","_blank");
-           currentMessage.innerHTML = message.message;
+            currentMessage = document.createElement("a");
+            currentMessage.setAttribute("href", message.message);
+            currentMessage.setAttribute("target","_blank");
+            currentMessage.innerHTML = message.message;
         } else {
             currentMessage = document.createTextNode(message.message);
         }
@@ -239,7 +238,6 @@
         phrasesContainer.scrollTop = phrasesContainer.scrollHeight;
 
     }
-
 
     function getAvatarColor(messageSender) {
         var hash = 0;
@@ -301,8 +299,10 @@
 
                 }
                 var channelName = $('.current').text();
+                $(".users").empty();
                 var index = channelsList.indexOf(channelName);
                 userList.splice(index, 0, ul);
+                userList = userList.sort(function(a,b) { return a.username - b.username });
                 currentUserList.append(userList[index]);
             }
         });

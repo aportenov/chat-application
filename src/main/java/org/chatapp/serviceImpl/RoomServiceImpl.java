@@ -1,6 +1,7 @@
 package org.chatapp.serviceImpl;
 
 import org.chatapp.entities.Room;
+import org.chatapp.enumerable.Status;
 import org.chatapp.models.UserViewModel;
 import org.chatapp.repositories.RoomRepository;
 import org.chatapp.services.RoomService;
@@ -52,11 +53,12 @@ public class RoomServiceImpl implements RoomService {
     public List<UserViewModel> findUsersRoomByName(String currentRoom) {
         Room room = this.roomRepository.findOneByName(currentRoom);
         if (room == null) {
-            //throw exeption
+            room = new Room();
         }
 
         List<UserViewModel> userViewModels = room.getUsers()
                 .stream()
+                .filter(u -> u.getStatus().equals(Status.ONLINE))
                 .map(u -> new UserViewModel(u.getUsername(), u.getImage()))
                 .collect(Collectors.toList());
 

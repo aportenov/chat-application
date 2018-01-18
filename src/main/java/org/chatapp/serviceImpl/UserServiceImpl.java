@@ -107,7 +107,12 @@ public class UserServiceImpl implements UserService{
             throw new UsernameNotFoundException(Errors.INVALID_USER);
         }
 
-        user.setStatus(user.getStatus().equals(String.valueOf(Status.ONLINE)) ? Status.OFFLINE : Status.ONLINE);
+        if (user.getStatus() == Status.ONLINE) {
+            user.setStatus(Status.OFFLINE);
+        } else {
+            user.setStatus(Status.ONLINE);
+        }
+
         this.userRepository.save(user);
         return user;
     }

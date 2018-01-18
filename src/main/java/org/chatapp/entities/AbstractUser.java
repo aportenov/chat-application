@@ -28,7 +28,7 @@ public abstract class AbstractUser implements UserDetails, Serializable {
     @Column(name = "user_name")
     private String username;
 
-    @Basic(optional = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(columnDefinition = "TEXT", nullable = true)

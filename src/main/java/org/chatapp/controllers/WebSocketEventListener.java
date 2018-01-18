@@ -45,9 +45,11 @@ public class WebSocketEventListener {
             MessageModel message = new MessageModel();
             message.setUser(username);
             message.setMessageType(String.valueOf(MessageType.LEAVE));
+            message.setMessage(user.getUsername() + " has left the channel");
 
             for (Room room : user.getRooms()) {
-                messageSendingOperations.convertAndSend("/sendMessage/" + room.getName() , message);
+                message.setRoomName(room.getName());
+                messageSendingOperations.convertAndSend("/topic/room/" + room.getName() , message);
             }
 
         }
